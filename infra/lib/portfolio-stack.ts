@@ -23,6 +23,8 @@ export interface PortfolioConfig {
   /** Existing us-east-1 certificate. When omitted, the stack creates one validated through the hosted zone. */
   certificateArn?: string;
   gmailPasswordParameter: string;
+  /** Google Search Console domain-verification token, published as a TXT record on the zone apex. */
+  googleSiteVerification?: string;
 }
 
 interface PortfolioStackProps extends StackProps {
@@ -154,6 +156,15 @@ function handler(event) {
     const aliasTarget = route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution));
     new route53.ARecord(this, 'SiteARecord', { zone, recordName, target: aliasTarget });
     new route53.AaaaRecord(this, 'SiteAaaaRecord', { zone, recordName, target: aliasTarget });
+
+    // Search Console "Domain" property verification; on the apex so it covers www and any subdomain.
+    if (config.googleSiteVerification) {
+      new route53.TxtRecord(this, 'GoogleSiteVerification', {
+        zone,
+        values: [config.googleSiteVerification],
+        ttl: Duration.minutes(5),
+      });
+    }
 
     new CfnOutput(this, 'SiteUrl', { value: `https://${config.domainName}` });
     new CfnOutput(this, 'CloudFrontUrl', { value: `https://${distribution.distributionDomainName}` });

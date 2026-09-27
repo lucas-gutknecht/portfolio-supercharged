@@ -4,5 +4,6 @@
   "applicationTag": "website",
   "domainName": "www.lucas-gutknecht-supercharged.com",
   "zoneName": "lucas-gutknecht-supercharged.com",
-  "gmailPasswordParameter": "/portfolio/gmail-app-password"
+  "gmailPasswordParameter": "/portfolio/gmail-app-password",
+  "googleSiteVerification": "google-site-verification=5ZC-6czIxreGH4XfevxeZtf--LTwtcZ76Le2UbF-UWA"
 }
