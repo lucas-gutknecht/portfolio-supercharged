@@ -96,7 +96,7 @@ Everything is in one CDK stack, `PortfolioWeb` (CloudFormation name `portfolio-w
 - **[Site upload](infra/lib/portfolio-stack.ts#L144-L150):** a `BucketDeployment` uploads the Angular build and invalidates the CloudFront cache on every deploy.
 - **DNS and TLS:** an [ACM certificate](infra/lib/portfolio-stack.ts#L109-L114) validated through DNS (or an existing one set with `certificateArn`), plus [Route 53 A and AAAA alias records](infra/lib/portfolio-stack.ts#L153-L156) for the site's domain.
 - **[IAM](infra/lib/portfolio-stack.ts#L64-L71):** least privilege; the Lambda can read only its own SSM parameter.
-- **[Tags](infra/bin/portfolio.ts#L19):** every resource is tagged `application=<applicationTag>`.
+- **[Tags](infra/bin/portfolio.ts#L18):** every resource is tagged `application=<applicationTag>`.
 
 Settings come from `infra/config/<env>.json`, [chosen with](infra/bin/portfolio.ts#L8-L11) `-c env=<env>` (the default is `prod`):
 
