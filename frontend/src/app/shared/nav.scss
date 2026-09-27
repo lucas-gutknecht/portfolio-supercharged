@@ -32,6 +32,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  white-space: nowrap;
   color: var(--text);
   font: 600 1.05rem var(--font-display);
 
@@ -69,6 +70,7 @@
   a:not(.btn) {
     position: relative;
     display: block;
+    white-space: nowrap;
     padding: 8px 14px;
     color: var(--text-muted);
     font-size: 0.93rem;
@@ -148,6 +150,17 @@
   kbd {
     font: 500 0.7rem var(--font-mono);
     color: var(--text-dim);
+  }
+}
+
+/* Between the mobile menu and full desktop, drop the shortcut label so the links fit on one line. */
+@media (max-width: 1180px) {
+  .search-btn kbd {
+    display: none;
+  }
+
+  .links a:not(.btn) {
+    padding-inline: 10px;
   }
 }
 

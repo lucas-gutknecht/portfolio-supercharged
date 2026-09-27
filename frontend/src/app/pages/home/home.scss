@@ -195,14 +195,15 @@
 }
 
 .chip-b {
-  bottom: 14%;
+  bottom: 0;
   left: -14%;
   animation-delay: -2s;
 }
 
 .chip-c {
-  top: 42%;
-  right: -10%;
+  /* Low on the right, over the shoulder, so it never covers the face. */
+  top: 79%;
+  right: -3%;
   animation-delay: -4s;
 }
 
