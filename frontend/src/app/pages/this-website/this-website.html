@@ -108,7 +108,10 @@
           </div>
           <ul>
             @for (p of layer.points; track $index) {
-              <li><app-icon name="check" /> {{ p }}</li>
+              <li>
+                <app-icon name="check" />
+                <a [href]="p.href" target="_blank" rel="noopener" title="View this code on GitHub">{{ p.text }}</a>
+              </li>
             }
           </ul>
           <a class="source" [href]="layer.file" target="_blank" rel="noopener">

@@ -1,4 +1,4 @@
-export const REPO_URL = 'https://github.com/lucas-gutknecht/portfolio';
+export const REPO_URL = 'https://github.com/lucas-gutknecht/portfolio-supercharged';
 
 export const profile = {
   name: 'Lucas Gutknecht',

@@ -1,1 +1,9 @@
-{}
+{
+  "acknowledged-issue-numbers": [
+    34892
+  ],
+  "hosted-zone:account=022403406756:domainName=lucas-gutknecht-supercharged.com:region=us-east-1": {
+    "Id": "/hostedzone/Z010556625F8QTWF5DWIG",
+    "Name": "lucas-gutknecht-supercharged.com."
+  }
+}

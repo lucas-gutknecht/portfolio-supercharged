@@ -132,6 +132,18 @@
       color: var(--green);
       margin-top: 3px;
     }
+
+    a {
+      color: inherit;
+      text-decoration: underline dotted var(--border-strong);
+      text-underline-offset: 4px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--cyan);
+        text-decoration-color: var(--cyan);
+      }
+    }
   }
 }
 
