@@ -7,12 +7,13 @@ export const profile = {
   location: 'Des Moines, Iowa',
   resume: '/files/resume.pdf',
   headshot: '/images/headshot.jpg',
-  roles: ['Data Engineer', 'AWS Cloud Builder', 'Pipeline Architect', 'API Developer'],
+  roles: ['Senior Software Engineer', 'Full Stack Developer', 'Data Engineer', 'AWS and Azure Cloud Builder', 'API Developer'],
   tagline:
-    'I turn messy, fast-moving data into reliable pipelines, event-driven systems and APIs, built on AWS and defined as code.',
+    'I build reliable data pipelines, APIs and the Angular front ends that use them, on AWS and Azure and defined as code.',
   bio: [
     "My career started in reporting and grew into database administration before I moved into data engineering. I started out building ETL in SSIS and T-SQL. Today I build cloud-native systems in Python on AWS.",
-    'Recently I have focused on event-driven architecture, API development and infrastructure as code with AWS CDK. I have also worked closely with data science teams, putting their models into production ingestion pipelines. I like building data platforms that are resilient, observable and easy for the next engineer to understand.',
+    'Along the way I focused on event-driven architecture, API development and infrastructure as code with AWS CDK, and I worked closely with data science teams, putting their models into production ingestion pipelines. At MidAmerican Energy I led a migration from a legacy vendor platform to Azure Data Factory and Databricks.',
+    'Today I work as a full stack developer, building Angular front ends and the backend APIs behind them in a MEAN stack environment. I like building systems that are resilient, observable and easy for the next engineer to understand.',
   ],
 };
 
@@ -30,7 +31,7 @@ export const stats: Stat[] = [
 ];
 
 export interface Focus {
-  icon: 'pipeline' | 'cloud' | 'bolt';
+  icon: 'pipeline' | 'cloud' | 'bolt' | 'code';
   title: string;
   text: string;
 }
@@ -49,7 +50,12 @@ export const focusAreas: Focus[] = [
   {
     icon: 'cloud',
     title: 'Cloud and IaC',
-    text: 'AWS CDK stacks, CI/CD in GitLab and GitHub, and least-privilege IAM, so infrastructure is reviewable and repeatable.',
+    text: 'AWS CDK stacks, Azure Data Factory and Databricks, CI/CD in GitLab, GitHub and Azure DevOps, and least-privilege IAM.',
+  },
+  {
+    icon: 'code',
+    title: 'Full stack web apps',
+    text: 'Angular front ends backed by REST APIs I build myself, including upgrading legacy apps from Angular 12 to Angular 20.',
   },
 ];
 
@@ -65,7 +71,9 @@ export const skills: Skill[] = [
   { name: 'AWS', detail: 'Glue · Lambda · ECS · Step Functions', years: 6 },
   { name: 'Python', detail: 'Boto3 · pandas · APIs', years: 5 },
   { name: 'Event-driven', detail: 'Kafka · SQS · SNS', years: 3 },
-  { name: 'PySpark', detail: 'AWS Glue · EMR · Athena', years: 2 },
+  { name: 'PySpark', detail: 'AWS Glue · EMR · Databricks', years: 2 },
+  { name: 'Azure', detail: 'Data Factory · Databricks · Storage', years: 1 },
+  { name: 'Angular', detail: 'Front end · TypeScript · REST APIs', years: 1 },
   { name: 'Data science', detail: 'Linear / logistic regression', years: 2 },
 ];
 
@@ -75,8 +83,10 @@ export const toolbox: { group: string; items: string[] }[] = [
     group: 'AWS',
     items: ['Glue', 'Lambda', 'API Gateway', 'Step Functions', 'SNS', 'SQS', 'ECS', 'ECR', 'EC2', 'IAM', 'S3', 'Athena', 'RDS', 'CloudFront'],
   },
-  { group: 'Data', items: ['Kafka', 'Airflow', 'SSIS', 'Kimball modeling', 'Parquet', 'EMR'] },
-  { group: 'Delivery', items: ['AWS CDK', 'Docker', 'GitLab CI', 'GitHub', 'Angular'] },
+  { group: 'Azure', items: ['Databricks', 'Data Factory', 'Storage Containers', 'Azure DevOps'] },
+  { group: 'Data', items: ['Kafka', 'Airflow', 'SSIS', 'CRON', 'CloudWatch Alarms', 'Kimball modeling', 'Parquet', 'EMR'] },
+  { group: 'Web', items: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'] },
+  { group: 'Delivery', items: ['AWS CDK', 'Docker', 'GitLab CI', 'GitHub', 'Azure DevOps'] },
 ];
 
 export interface Job {
@@ -90,10 +100,34 @@ export interface Job {
 
 export const experience: Job[] = [
   {
+    company: 'Wellmark',
+    title: 'Senior Software Engineer',
+    start: 'Mar 2026',
+    end: 'Present',
+    highlights: [
+      'Upgraded a legacy Angular application from Angular 12 to Angular 20, working through breaking changes, updating dependencies and build tooling, and refactoring deprecated APIs.',
+      'Work with business stakeholders to turn requirements into front-end features, UI improvements and REST API integrations.',
+      'Build backend API endpoints and the front-end features that consume and display their data.',
+    ],
+    tags: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'],
+  },
+  {
+    company: 'MidAmerican Energy',
+    title: 'Data Engineer',
+    start: 'Jun 2025',
+    end: 'Mar 2026',
+    highlights: [
+      'Led a small team migrating off Celonis, a legacy ETL and reporting tool, to Azure Data Factory and Databricks, and designed the target architecture.',
+      'Built Data Factory templates and pipelines that pass parameters to Databricks notebooks to automate incremental and full loads.',
+      'Wrote Databricks notebooks that connect directly to source systems and transform data with PySpark.',
+    ],
+    tags: ['Azure', 'Data Factory', 'Databricks', 'PySpark'],
+  },
+  {
     company: 'Corteva',
     title: 'Data Engineer',
     start: 'May 2022',
-    end: 'Present',
+    end: 'Jun 2025',
     highlights: [
       'Built a business application that consumes Kafka events, runs Python in Docker images on AWS Fargate, writes to RDS and exposes the data through API Gateway.',
       'Put data science models (pickle format) into production in an ingestion pipeline deployed on ECS.',
@@ -176,6 +210,8 @@ export const experience: Job[] = [
 ];
 
 export const education = [
+  { title: 'Microsoft Azure Data Fundamentals', org: 'Microsoft certification', year: '2025' },
+  { title: 'Microsoft Azure Fundamentals', org: 'Microsoft certification', year: '2025' },
   { title: 'Data Science Certification', org: 'Des Moines Area Community College', year: '2024' },
   { title: 'Python Application Developer Certification', org: 'Des Moines Area Community College', year: '2022' },
   { title: 'Database Management Specialist', org: 'Des Moines Area Community College', year: '2015' },

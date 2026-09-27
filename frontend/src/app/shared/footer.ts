@@ -13,7 +13,7 @@ import { Icon } from './icon';
         <span class="mark">LG</span>
         <div>
           <strong>{{ profile.name }}</strong>
-          <span class="muted">Data Engineer · {{ profile.location }}</span>
+          <span class="muted">Software &amp; Data Engineer · {{ profile.location }}</span>
         </div>
       </div>
 
