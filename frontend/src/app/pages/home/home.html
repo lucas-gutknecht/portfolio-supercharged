@@ -1,0 +1,271 @@
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="status-pill">
+        <span class="pulse"></span> Data Engineer at Corteva
+      </span>
+
+      <h1>
+        Hi, I'm <span class="gradient-text">Lucas Gutknecht</span>
+      </h1>
+
+      <p class="role" aria-live="polite">
+        <span class="prompt">&gt;</span>
+        <span>{{ typed() }}</span><span class="caret"></span>
+      </p>
+
+      <p class="tagline">{{ profile.tagline }}</p>
+
+      <div class="actions">
+        <a class="btn btn-primary" routerLink="/" fragment="experience">
+          See my work <app-icon name="arrow" />
+        </a>
+        <a class="btn btn-ghost" [href]="profile.resume" download>
+          <app-icon name="download" /> Resume
+        </a>
+      </div>
+
+      <div class="socials">
+        <a [href]="'mailto:' + profile.email"><app-icon name="mail" /> {{ profile.email }}</a>
+        <a [href]="profile.github" target="_blank" rel="noopener"><app-icon name="github" /> GitHub</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="portrait">
+        <div class="ring"></div>
+        <img [src]="profile.headshot" alt="Portrait of Lucas Gutknecht" width="720" height="720" />
+      </div>
+      <span class="float-chip chip-a"><span class="dot cyan"></span>Kafka → Fargate</span>
+      <span class="float-chip chip-b"><span class="dot violet"></span>Glue · PySpark</span>
+      <span class="float-chip chip-c"><span class="dot pink"></span>AWS CDK</span>
+    </div>
+  </div>
+
+  <a class="scroll-cue" routerLink="/" fragment="about" aria-label="Scroll to about">
+    <span></span>
+  </a>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="stats-band">
+  <div class="container">
+    <div class="stats card" appReveal (revealed)="countUp()">
+      @for (stat of stats; track stat.label; let i = $index) {
+        <div class="stat">
+          <span class="stat-value gradient-text">{{ counts()[i] }}{{ stat.suffix }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="container about-grid">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">About me</span>
+      <h2>From reports to <span class="gradient-text">real-time pipelines</span></h2>
+      @for (para of profile.bio; track $index) {
+        <p>{{ para }}</p>
+      }
+    </div>
+
+    <div class="focus-list">
+      @for (f of focusAreas; track f.title; let i = $index) {
+        <article class="card interactive glow-border focus" appReveal [revealDelay]="i * 120">
+          <span class="focus-icon"><app-icon [name]="f.icon" /></span>
+          <div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.text }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section class="section" id="skills">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">Skills</span>
+      <h2>The <span class="gradient-text">toolkit</span></h2>
+      <p>Years of hands-on, production experience with each tool.</p>
+    </div>
+
+    <div class="skills-grid">
+      <div class="card bars" appReveal (revealed)="skillsShown.set(true)">
+        @for (s of skills; track s.name) {
+          <div class="bar-row">
+            <div class="bar-head">
+              <span class="bar-name">{{ s.name }}</span>
+              <span class="bar-years">{{ s.years }} {{ s.years === 1 ? 'yr' : 'yrs' }}</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="skillWidth(s.years)"></div>
+            </div>
+            <span class="bar-detail">{{ s.detail }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="toolbox">
+        @for (group of toolbox; track group.group; let i = $index) {
+          <div class="card tool-group" appReveal [revealDelay]="i * 100">
+            <h4>{{ group.group }}</h4>
+            <div class="chip-list">
+              @for (item of group.items; track item) {
+                <span class="chip">{{ item }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section class="section" id="experience">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">Experience</span>
+      <h2>Where I've <span class="gradient-text">shipped</span></h2>
+      <p>More than ten years across agriculture, finance, retail and media, moving from analyst to data engineer.</p>
+    </div>
+
+    <ol class="timeline">
+      @for (job of jobs(); track job.company + job.start; let first = $first) {
+        <li class="job" appReveal>
+          <span class="node" [class.current]="first"></span>
+          <article class="card interactive glow-border">
+            <header class="job-head">
+              <div>
+                <h3>{{ job.title }}</h3>
+                <span class="company">{{ job.company }}</span>
+              </div>
+              <span class="dates">{{ job.start }} – {{ job.end }}</span>
+            </header>
+            <ul class="highlights">
+              @for (h of job.highlights; track $index) {
+                <li>{{ h }}</li>
+              }
+            </ul>
+            <div class="chip-list">
+              @for (t of job.tags; track t) {
+                <span class="chip">{{ t }}</span>
+              }
+            </div>
+          </article>
+        </li>
+      }
+    </ol>
+
+    <div class="timeline-more">
+      <button class="btn btn-ghost" type="button" (click)="showAllJobs.set(!showAllJobs())">
+        {{ showAllJobs() ? 'Show fewer roles' : 'Show ' + hiddenJobCount + ' earlier roles' }}
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EDUCATION ================= -->
+<section class="section edu-section">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">Education</span>
+      <h2>Always <span class="gradient-text">learning</span></h2>
+    </div>
+    <div class="edu-grid">
+      @for (e of education; track e.title; let i = $index) {
+        <div class="card interactive edu" appReveal [revealDelay]="i * 90">
+          <span class="edu-year">{{ e.year }}</span>
+          <h3>{{ e.title }}</h3>
+          <span class="edu-org">{{ e.org }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESUME ================= -->
+<section class="section" id="resume">
+  <div class="container">
+    <div class="card resume" appReveal>
+      <div class="resume-head">
+        <div>
+          <span class="eyebrow">Resume</span>
+          <h2>The full story, on paper</h2>
+        </div>
+        <div class="resume-actions">
+          <button class="btn btn-ghost" type="button" (click)="resumeOpen.set(!resumeOpen())">
+            <app-icon name="expand" /> {{ resumeOpen() ? 'Hide preview' : 'Preview' }}
+          </button>
+          <a class="btn btn-primary" [href]="profile.resume" download>
+            <app-icon name="download" /> Download PDF
+          </a>
+        </div>
+      </div>
+      @if (resumeOpen()) {
+        <iframe class="resume-frame" [src]="resumeUrl" title="Lucas Gutknecht resume"></iframe>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="contact card" appReveal>
+      <div class="contact-copy">
+        <span class="eyebrow">Get in touch</span>
+        <h2>Let's build something <span class="gradient-text">data-driven</span></h2>
+        <p>
+          Want to see the backend work? Enter your email and my TypeScript Lambda will send you a
+          note through API Gateway and CloudFront. Just reply to it to reach me.
+        </p>
+        <a class="direct" [href]="'mailto:' + profile.email">
+          <app-icon name="mail" /> Or email me directly at {{ profile.email }}
+        </a>
+      </div>
+
+      <form class="contact-form" (ngSubmit)="sendIntroEmail()">
+        <label for="contact-email" class="sr-label">Your email</label>
+        <div class="field">
+          <input
+            id="contact-email"
+            class="input"
+            type="email"
+            name="email"
+            placeholder="you@company.com"
+            autocomplete="email"
+            required
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event); sendState.set('idle')"
+          />
+          <button class="btn btn-primary" type="submit" [disabled]="sendState() === 'sending' || !email()">
+            @if (sendState() === 'sending') {
+              <span class="spinner"></span> Sending
+            } @else {
+              <app-icon name="send" /> Send
+            }
+          </button>
+        </div>
+        @if (sendState() === 'sent' || sendState() === 'error') {
+          <p class="result" [class.error]="sendState() === 'error'" role="status">
+            @if (sendState() === 'sent') {
+              <app-icon name="check" />
+            }
+            {{ sendMessage() }}
+          </p>
+        }
+        <a class="console-link" routerLink="/live-api">
+          <app-icon name="terminal" /> Open the live API console
+        </a>
+      </form>
+    </div>
+  </div>
+</section>

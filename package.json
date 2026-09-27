@@ -1,0 +1,20 @@
+{
+  "name": "portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Lucas Gutknecht's professional portfolio — Angular + TypeScript Lambda, served through CloudFront.",
+  "scripts": {
+    "setup": "npm install && cd frontend && npm install && cd ../api && npm install && cd ../infra && npm install",
+    "dev": "concurrently -k -n api,web -c magenta,cyan \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "cd api && npm run dev",
+    "dev:web": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "typecheck": "cd api && npm run typecheck && cd ../infra && npm run typecheck",
+    "synth": "npm run build && cd infra && npm run synth",
+    "diff": "npm run build && cd infra && npm run diff",
+    "deploy": "npm run build && cd infra && npm run deploy"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

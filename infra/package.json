@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-infra",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "synth": "cdk synth -c env=prod",
+    "diff": "cdk diff -c env=prod",
+    "deploy": "cdk deploy -c env=prod",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.271.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "aws-cdk": "^2.1143.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.2"
+  }
+}

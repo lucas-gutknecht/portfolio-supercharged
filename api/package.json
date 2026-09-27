@@ -1,0 +1,21 @@
+{
+  "name": "portfolio-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/local.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.1141.0",
+    "nodemailer": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.163",
+    "@types/node": "^22.15.0",
+    "@types/nodemailer": "^8.0.2",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.2"
+  }
+}

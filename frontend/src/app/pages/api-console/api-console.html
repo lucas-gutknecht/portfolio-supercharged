@@ -1,0 +1,93 @@
+<section class="section page-hero">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">Live API</span>
+      <h1>Make a <span class="gradient-text">real call</span> to my Lambda</h1>
+      <p>
+        These are the live endpoints that run this site. Pick one and send it. The request goes
+        through CloudFront and API Gateway to a TypeScript Lambda, and you see the status code,
+        the latency and the raw JSON that comes back.
+      </p>
+    </div>
+
+    <div class="console" appReveal>
+      <!-- Endpoint list -->
+      <aside class="card endpoints" aria-label="Endpoints">
+        <h2>Endpoints</h2>
+        @for (ep of endpoints; track ep.path) {
+          <button
+            type="button"
+            class="endpoint"
+            [class.active]="ep === selected()"
+            [attr.aria-pressed]="ep === selected()"
+            (click)="select(ep)"
+          >
+            <span class="method" [class.post]="ep.method === 'POST'">{{ ep.method }}</span>
+            <span class="ep-text">
+              <strong>{{ ep.summary }}</strong>
+              <code>{{ ep.path }}</code>
+            </span>
+          </button>
+        }
+      </aside>
+
+      <!-- Request + response -->
+      <div class="panel">
+        <div class="card request">
+          <div class="url-bar">
+            <span class="method" [class.post]="selected().method === 'POST'">{{ selected().method }}</span>
+            <code class="url">{{ selected().path }}</code>
+            <button class="btn btn-primary send" type="button" (click)="send()" [disabled]="loading()">
+              @if (loading()) {
+                <span class="spinner"></span> Sending
+              } @else {
+                <app-icon name="play" /> Send
+              }
+            </button>
+          </div>
+          <p class="desc">{{ selected().description }}</p>
+
+          @if (selected().method === 'POST') {
+            <label class="label" for="req-body">Request body</label>
+            <textarea
+              id="req-body"
+              class="body-editor"
+              rows="4"
+              spellcheck="false"
+              [ngModel]="body()"
+              (ngModelChange)="body.set($event)"
+            ></textarea>
+            @if (bodyError()) {
+              <p class="body-error">{{ bodyError() }}</p>
+            }
+          }
+
+          <details class="curl">
+            <summary>Show the curl command</summary>
+            <pre><code>{{ curl() }}</code></pre>
+          </details>
+        </div>
+
+        <div class="card response" aria-live="polite">
+          <div class="response-head">
+            <h2>Response</h2>
+            @if (result(); as r) {
+              <div class="meta">
+                <span class="status" [class]="'status ' + statusClass(r.status)">{{ r.status || 'ERR' }}</span>
+                <span class="latency">{{ r.ms }} ms</span>
+              </div>
+            }
+          </div>
+          @if (result()) {
+            <pre class="json"><code [innerHTML]="responseHtml()"></code></pre>
+          } @else {
+            <div class="empty">
+              <app-icon name="terminal" />
+              <p>Press <strong>Send</strong> to call the endpoint.</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

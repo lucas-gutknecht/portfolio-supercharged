@@ -1,101 +1,66 @@
-# Portfolio AWS CDK Stack
+# Lucas Gutknecht · Portfolio
 
-This repository contains the infrastructure and application code for deploying a serverless professional portfolio website using AWS CDK, Lambda, API Gateway, Route 53, and ACM.
+Source for [www.lucas-gutknecht-supercharged.com](https://www.lucas-gutknecht-supercharged.com): a professional portfolio built with **Angular and TypeScript**, served from **CloudFront**, with a small **TypeScript Lambda** API. All of the infrastructure is defined in **AWS CDK (TypeScript)**.
 
----
-
-## Stack Overview
-
-- **AWS Lambda**: Runs the Flask application.
-- **API Gateway**: Serves as the HTTP endpoint for the Lambda function.
-- **Route 53**: Manages DNS records for custom domains.
-- **ACM (AWS Certificate Manager)**: Provides SSL certificates for HTTPS.
-- **S3**: (Optional) Hosts large static files like videos or PDFs.
-
----
-
-## Deployment Process
-
-### 1. Prerequisites
-
-- AWS CLI configured with appropriate permissions
-- AWS CDK installed (`npm install -g aws-cdk`)
-- Python 3.11+ and `pip` installed
-- Your domain managed in Route 53
-
-### 2. Clone the Repository
-
-```sh
-git clone https://github.com/lucas-gutknecht/portfolio.git
-cd portfolio
+```
+Visitor ─▶ Route 53 ─▶ CloudFront ─┬─ /*      ─▶ S3 (Angular build, private via OAC)
+                                   └─ /api/*  ─▶ API Gateway ─▶ Lambda (Node 22) ─▶ SSM · Gmail SMTP
 ```
 
-### 3. Set Up Python Environment
+## Repository layout
+
+| Folder      | What it is                                                                 |
+| ----------- | -------------------------------------------------------------------------- |
+| `frontend/` | Angular 21 SPA: pages, design system and animations                        |
+| `api/`      | TypeScript API: shared router, Lambda handler and local dev server         |
+| `infra/`    | CDK stack: S3, CloudFront, API Gateway, Lambda, Route 53 and IAM           |
+
+The site content (bio, skills, experience, education) lives in [`frontend/src/app/data/profile.ts`](frontend/src/app/data/profile.ts). Static files such as the resume, headshot and favicon are in `frontend/public/`.
+
+## Run locally
+
+Requirements: Node 22 and npm 10.
 
 ```sh
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+npm run setup   # install the root, frontend, api and infra packages
+npm run dev     # API on http://localhost:3000 + site on http://localhost:4200
 ```
 
-### 4. Configure Environment
+Open http://localhost:4200. The Angular dev server proxies `/api/*` to the local API (see `frontend/proxy.conf.json`), so the site behaves the same way it does behind CloudFront.
 
-Update your configuration (e.g., `prod.ini` or environment variables) with:
-- `domain_name=www.xxxxx.com`
-- `zone_name=www.xxxxx.com`
-- `certificate=arn:aws:acm:us-east-1:YOUR_CERTIFICATE_ARN`
+By default the email endpoint runs in **dry-run mode**: it logs the email instead of sending it. To send real email locally, copy `api/.env.example` to `api/.env` and set `GMAIL_APP_PASSWORD`.
 
-### 5. Bootstrap CDK (first time only)
+## Deploy
+
+Prerequisites:
+
+- The AWS CLI is configured for the account in `infra/config/prod.json`, and CDK has been bootstrapped (`npx cdk bootstrap`).
+- The domain in `infra/config/prod.json` has a Route 53 hosted zone in the same account. Registering the domain through Route 53 creates the zone automatically. The stack creates the ACM certificate and validates it through DNS, unless you set `certificateArn` to use an existing one.
+- The Gmail app password is stored as an SSM SecureString (one-time setup):
+
+  ```sh
+  aws ssm put-parameter --name /portfolio/gmail-app-password --type SecureString --value "<app password>"
+  ```
+
+Then run:
 
 ```sh
-cdk bootstrap
+npm run diff     # build the site and preview the changes
+npm run deploy   # build the site and deploy it
 ```
 
-### 6. Deploy the Stack
+`deploy` builds the Angular app, bundles the Lambda with esbuild, uploads the site to S3 and invalidates the CloudFront cache.
 
-```sh
-cdk deploy
-```
+## API
 
-### 7. DNS Setup
+| Method | Path                          | Description                        |
+| ------ | ----------------------------- | ---------------------------------- |
+| GET    | `/api/hello`                  | Hello-world round trip             |
+| POST   | `/api/send_portfolio_email`   | `{ "recipient_email": "..." }`     |
+| GET    | `/api/openapi.json`           | OpenAPI 3 spec                     |
 
-- Ensure your Route 53 hosted zone is for your domain name.
-- The stack creates an **A (Alias)** record for `www` pointing to your API Gateway custom domain.
-
-### 8. ACM Certificate
-
-- Request a certificate for both `www.xxxx.com` in ACM.
-- Use DNS validation and ensure the certificate is **issued** before deploying.
-
----
-
-## Serving Static Files
-
-- Small static files (images, CSS, JS) are served by Flask from the `/static` directory.
-- For large files (videos, PDFs), upload to S3 and reference the S3 URL in your HTML.
-
----
-
-## Google Search Console
-
-- Add the verification HTML file or meta tag to your Flask app/templates.
-- After verification, submit your sitemap and request indexing in Search Console.
-
----
-
-## Troubleshooting
-
-- **Forbidden/Error:** Check API Gateway custom domain and base path mapping.
-- **Static files not loading:** Ensure files are included in the Lambda package and correct binary media types are set in API Gateway.
-- **PDF/video not displaying:** Serve large files from S3 for best results.
-
----
+You can try them in the site's **Live API** console at `/live-api`. The old `/apidocs` link redirects there.
 
 ## License
 
-MIT License
-
----
-
-**Questions?**  
-Open an issue or contact [lucas-gutknecht](https://github.com/lucas-gutknecht).
+MIT

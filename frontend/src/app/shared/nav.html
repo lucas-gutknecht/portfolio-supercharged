@@ -1,0 +1,40 @@
+<nav class="container bar" aria-label="Main">
+  <a routerLink="/" class="brand" (click)="close()" aria-label="Lucas Gutknecht, home">
+    <span class="mark">LG</span>
+    <span class="brand-name">Lucas Gutknecht</span>
+  </a>
+
+  <ul class="links" id="nav-links">
+    @for (link of links; track link.label) {
+      <li>
+        @if (link.fragment) {
+          <a [routerLink]="link.path" [fragment]="link.fragment" (click)="close()">{{ link.label }}</a>
+        } @else {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="close()"
+            >{{ link.label }}</a
+          >
+        }
+      </li>
+    }
+    <li class="cta-item">
+      <a class="btn btn-primary cta" routerLink="/" fragment="contact" (click)="close()">
+        Let's talk <app-icon name="arrow" />
+      </a>
+    </li>
+  </ul>
+
+  <button
+    class="toggle"
+    type="button"
+    (click)="toggle()"
+    [attr.aria-expanded]="open()"
+    aria-controls="nav-links"
+    [attr.aria-label]="open() ? 'Close menu' : 'Open menu'"
+  >
+    <app-icon [name]="open() ? 'close' : 'menu'" />
+  </button>
+</nav>
