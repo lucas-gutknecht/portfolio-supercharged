@@ -334,10 +334,11 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: var(--gradient-soft);
-  border: 1px solid var(--border-strong);
-  color: var(--cyan);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
   font-size: 1.35rem;
+  box-shadow: 0 0 20px -6px color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
 /* ================= SKILLS ================= */
@@ -405,20 +406,20 @@
     font-family: var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
     margin-bottom: 14px;
   }
+}
 
-  .chip {
-    transition:
-      color 0.2s,
-      border-color 0.2s;
-
-    &:hover {
-      color: var(--text);
-      border-color: var(--violet);
-    }
-  }
+.group-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
 }
 
 /* ================= EXPERIENCE ================= */
@@ -440,11 +441,66 @@
   }
 }
 
+.timeline-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 28px;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
+}
+
+.filter-hint {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.filter-status {
+  color: var(--text-muted);
+
+  app-icon {
+    color: var(--cyan);
+  }
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-muted);
+  font: 500 0.8rem var(--font-body);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--cyan);
+  }
+}
+
 .job {
   position: relative;
 
   & + & {
-    margin-top: 24px;
+    margin-top: 20px;
   }
 }
 
@@ -459,17 +515,22 @@
   border: 2px solid var(--violet);
 
   &.current {
-    border-color: var(--cyan);
-    box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.15);
+    border-color: var(--green);
+    box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.15);
 
     &::after {
       content: '';
       position: absolute;
       inset: 3px;
       border-radius: 50%;
-      background: var(--cyan);
+      background: var(--green);
     }
   }
+}
+
+.job-heading {
+  margin: 0;
+  font-size: inherit;
 }
 
 .job-head {
@@ -477,12 +538,64 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px 24px;
+  width: 100%;
   margin-bottom: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
 
-  h3 {
-    font-size: 1.3rem;
-    margin-bottom: 2px;
+.job-title {
+  display: grid;
+  gap: 2px;
+}
+
+.title-text {
+  font: 600 1.3rem var(--font-display);
+  color: var(--text);
+}
+
+.job-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.chevron {
+  margin-top: 4px;
+  color: var(--text-muted);
+  transition:
+    rotate 0.3s var(--ease),
+    color 0.2s;
+
+  .open & {
+    rotate: 180deg;
+    color: var(--text);
   }
+}
+
+.job-head:hover .chevron {
+  color: var(--text);
+}
+
+/* Height animates by moving the grid row between 0fr and 1fr. */
+.job-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease);
+
+  .open & {
+    grid-template-rows: 1fr;
+  }
+}
+
+.job-body-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .company {
@@ -494,6 +607,10 @@
   font: 500 0.85rem var(--font-mono);
   color: var(--text-muted);
   padding-top: 4px;
+
+  &.current {
+    color: var(--green);
+  }
 }
 
 .highlights {
@@ -523,12 +640,6 @@
       transform: rotate(45deg);
     }
   }
-}
-
-.timeline-more {
-  display: flex;
-  justify-content: center;
-  margin-top: 36px;
 }
 
 /* ================= EDUCATION ================= */

@@ -30,8 +30,12 @@ export const stats: Stat[] = [
   { value: 2, suffix: '', label: 'Industry certifications' },
 ];
 
+/** Palette tokens from styles.scss, used to color-code focus areas, toolbox groups and tags. */
+export type Accent = 'cyan' | 'violet' | 'pink' | 'green' | 'amber' | 'blue';
+
 export interface Focus {
   icon: 'pipeline' | 'cloud' | 'bolt' | 'code';
+  accent: Accent;
   title: string;
   text: string;
 }
@@ -39,21 +43,25 @@ export interface Focus {
 export const focusAreas: Focus[] = [
   {
     icon: 'pipeline',
+    accent: 'cyan',
     title: 'Data pipelines',
     text: 'ETL and ELT in Python, PySpark and SQL: from Glue jobs writing Parquet queried in Athena to Kimball star schemas in the warehouse.',
   },
   {
     icon: 'bolt',
+    accent: 'amber',
     title: 'Event-driven systems',
     text: 'Kafka, SNS and SQS feeding containerized workers on Fargate and ECS, with results exposed through API Gateway.',
   },
   {
     icon: 'cloud',
+    accent: 'violet',
     title: 'Cloud and IaC',
     text: 'AWS CDK stacks, Azure Data Factory and Databricks, CI/CD in GitLab, GitHub and Azure DevOps, and least-privilege IAM.',
   },
   {
     icon: 'code',
+    accent: 'pink',
     title: 'Full stack web apps',
     text: 'Angular front ends backed by REST APIs I build myself, including upgrading legacy apps from Angular 12 to Angular 20.',
   },
@@ -77,17 +85,41 @@ export const skills: Skill[] = [
   { name: 'Data science', detail: 'Linear / logistic regression', years: 2 },
 ];
 
-export const toolbox: { group: string; items: string[] }[] = [
-  { group: 'Languages', items: ['SQL', 'Python', 'TypeScript', 'C#', 'VBA'] },
+export const toolbox: { group: string; accent: Accent; items: string[] }[] = [
+  { group: 'Languages', accent: 'violet', items: ['SQL', 'Python', 'TypeScript', 'C#', 'VBA'] },
   {
     group: 'AWS',
+    accent: 'amber',
     items: ['Glue', 'Lambda', 'API Gateway', 'Step Functions', 'SNS', 'SQS', 'ECS', 'ECR', 'EC2', 'IAM', 'S3', 'Athena', 'RDS', 'CloudFront'],
   },
-  { group: 'Azure', items: ['Databricks', 'Data Factory', 'Storage Containers', 'Azure DevOps'] },
-  { group: 'Data', items: ['Kafka', 'Airflow', 'SSIS', 'CRON', 'CloudWatch Alarms', 'Kimball modeling', 'Parquet', 'EMR'] },
-  { group: 'Web', items: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'] },
-  { group: 'Delivery', items: ['AWS CDK', 'Docker', 'GitLab CI', 'GitHub', 'Azure DevOps'] },
+  { group: 'Azure', accent: 'blue', items: ['Databricks', 'Data Factory', 'Storage Containers', 'Azure DevOps'] },
+  { group: 'Data', accent: 'cyan', items: ['Kafka', 'Airflow', 'SSIS', 'CRON', 'CloudWatch Alarms', 'Kimball modeling', 'Parquet', 'EMR'] },
+  { group: 'Web', accent: 'pink', items: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'] },
+  { group: 'Delivery', accent: 'green', items: ['AWS CDK', 'Docker', 'GitLab CI', 'GitHub', 'Azure DevOps'] },
 ];
+
+/** Job tags that aren't toolbox items but belong to a toolbox group. */
+const tagGroups: Record<string, string> = {
+  Azure: 'Azure',
+  Fargate: 'AWS',
+  RDS: 'AWS',
+  DMS: 'AWS',
+  CDK: 'Delivery',
+  PySpark: 'Data',
+  'Data warehouse': 'Data',
+  Oracle: 'Data',
+  'SQL Server': 'Data',
+  Boto3: 'Languages',
+};
+
+/** Accent for each job tag, matching the toolbox group it belongs to (first group wins). */
+export const tagAccents = new Map<string, Accent>();
+for (const { accent, items } of toolbox) {
+  for (const item of items) if (!tagAccents.has(item)) tagAccents.set(item, accent);
+}
+for (const [tag, group] of Object.entries(tagGroups)) {
+  tagAccents.set(tag, toolbox.find((g) => g.group === group)!.accent);
+}
 
 export interface Job {
   company: string;
@@ -96,6 +128,8 @@ export interface Job {
   end: string;
   highlights: string[];
   tags: string[];
+  /** Toolbox skills this role used, from the resume. Drives the skill filter along with tags. */
+  uses: string[];
 }
 
 export const experience: Job[] = [
@@ -110,6 +144,7 @@ export const experience: Job[] = [
       'Build backend API endpoints and the front-end features that consume and display their data.',
     ],
     tags: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'],
+    uses: ['Angular', 'TypeScript', 'REST APIs', 'MEAN stack'],
   },
   {
     company: 'MidAmerican Energy',
@@ -122,6 +157,7 @@ export const experience: Job[] = [
       'Wrote Databricks notebooks that connect directly to source systems and transform data with PySpark.',
     ],
     tags: ['Azure', 'Data Factory', 'Databricks', 'PySpark'],
+    uses: ['Databricks', 'Data Factory', 'Python'],
   },
   {
     company: 'Corteva',
@@ -136,6 +172,7 @@ export const experience: Job[] = [
       'Manage application roles in IAM with least privilege.',
     ],
     tags: ['Kafka', 'Fargate', 'ECS', 'Glue', 'Airflow', 'API Gateway'],
+    uses: ['SQL', 'Python', 'Kafka', 'Docker', 'RDS', 'API Gateway', 'ECS', 'Glue', 'Airflow', 'SNS', 'S3', 'Lambda', 'IAM', 'Kimball modeling'],
   },
   {
     company: 'Principal Financial Group',
@@ -148,6 +185,7 @@ export const experience: Job[] = [
       'Deployed resources through CDK as infrastructure as code.',
     ],
     tags: ['PySpark', 'Lambda', 'Athena', 'CDK'],
+    uses: ['SQL', 'Python', 'Lambda', 'Glue', 'SNS', 'SQS', 'CloudWatch Alarms', 'S3', 'Athena', 'Parquet', 'AWS CDK'],
   },
   {
     company: 'CDS Global',
@@ -159,6 +197,7 @@ export const experience: Job[] = [
       'Built PySpark jobs on EMR and Python integrations using Boto3 and client APIs.',
     ],
     tags: ['EMR', 'Boto3', 'RDS'],
+    uses: ['SQL', 'Python', 'SSIS', 'S3', 'RDS', 'EMR'],
   },
   {
     company: 'Hy-Vee',
@@ -170,6 +209,7 @@ export const experience: Job[] = [
       'Built C# .NET Windows Forms tools for data maintenance.',
     ],
     tags: ['SSIS', 'Python', 'C#'],
+    uses: ['SQL', 'Python', 'C#', 'SSIS'],
   },
   {
     company: "Casey's",
@@ -180,6 +220,7 @@ export const experience: Job[] = [
       'Loaded the Microsoft APS data warehouse with SSIS, including Kimball slowly changing dimensions.',
     ],
     tags: ['SSIS', 'Data warehouse'],
+    uses: ['SQL', 'SSIS', 'Kimball modeling'],
   },
   {
     company: 'CDS Global',
@@ -190,6 +231,7 @@ export const experience: Job[] = [
       'Migrated SQL Server to AWS RDS with the Schema Conversion Tool and DMS, and set up a 3-node EC2 cluster.',
     ],
     tags: ['RDS', 'DMS', 'EC2', 'Linux'],
+    uses: ['SQL', 'RDS', 'EC2', 'CRON'],
   },
   {
     company: 'Athene',
@@ -198,6 +240,7 @@ export const experience: Job[] = [
     end: 'May 2018',
     highlights: ['Automated rate and annuity tooling with SQL against Oracle and VBA.'],
     tags: ['Oracle', 'VBA'],
+    uses: ['SQL', 'VBA'],
   },
   {
     company: 'Voya Financial · Sentinel Development',
@@ -206,6 +249,7 @@ export const experience: Job[] = [
     end: 'May 2016',
     highlights: ['Migrated Access to SQL Server, built reporting, and scrubbed and mapped client data imports.'],
     tags: ['SQL Server', 'Access'],
+    uses: ['SQL'],
   },
 ];
 
@@ -217,3 +261,70 @@ export const education = [
   { title: 'Database Management Specialist', org: 'Des Moines Area Community College', year: '2015' },
   { title: 'B.S. Business Administration, Marketing', org: 'Drake University', year: '2009' },
 ];
+
+export interface PipelineStep {
+  name: string;
+  role: string;
+  detail: string;
+}
+
+export interface Pipeline {
+  id: string;
+  label: string;
+  company: string;
+  summary: string;
+  accent: Accent;
+  steps: PipelineStep[];
+}
+
+/** Systems from the experience section, drawn as animated data-flow diagrams. */
+export const pipelines: Pipeline[] = [
+  {
+    id: 'corteva',
+    label: 'Event-driven API',
+    company: 'Corteva · AWS',
+    summary: 'Business events stream in from Kafka, are processed by containerized Python, and are served through an API.',
+    accent: 'amber',
+    steps: [
+      { name: 'Kafka', role: 'Event stream', detail: 'Business events arrive as messages from Kafka event messaging services.' },
+      {
+        name: 'Fargate',
+        role: 'Python in Docker',
+        detail: 'Python scripts packaged as Docker images run on AWS Fargate and process each message.',
+      },
+      { name: 'RDS', role: 'Relational store', detail: 'Processed records are written to an Amazon RDS database.' },
+      { name: 'API Gateway', role: 'REST API', detail: 'The data is exposed to consumers through API Gateway.' },
+    ],
+  },
+  {
+    id: 'midamerican',
+    label: 'Celonis → Azure migration',
+    company: 'MidAmerican Energy · Azure',
+    summary: 'A legacy ETL and reporting platform replaced with parameterized Data Factory pipelines and Databricks notebooks.',
+    accent: 'blue',
+    steps: [
+      {
+        name: 'Data Factory',
+        role: 'Orchestration',
+        detail: 'Reusable Data Factory templates schedule each job and pass parameters, such as incremental or full load, to Databricks.',
+      },
+      {
+        name: 'Source systems',
+        role: 'Direct connection',
+        detail: 'Databricks notebooks connect directly to the source data and load it into a DataFrame.',
+      },
+      { name: 'Databricks', role: 'PySpark transforms', detail: 'Notebooks transform the data with PySpark.' },
+      { name: 'Azure Storage', role: 'Landing zone', detail: 'Transformed data is written to Azure Storage containers.' },
+    ],
+  },
+];
+
+/** Extra search terms for toolbox items whose name doesn't appear verbatim in the experience text. */
+export const skillTerms: Record<string, string[]> = {
+  'REST APIs': ['REST API'],
+  'Kimball modeling': ['Kimball'],
+  'GitLab CI': ['GitLab'],
+  'AWS CDK': ['CDK'],
+  'CloudWatch Alarms': ['CloudWatch'],
+  'Storage Containers': ['Azure Storage'],
+};

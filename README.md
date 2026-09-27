@@ -34,8 +34,9 @@ Every route is [lazy-loaded](frontend/src/app/app.routes.ts#L3-L22), and navigat
 - **Hero:** name, headshot, a typewriter that cycles through roles, the tagline, and buttons for the resume download, email and GitHub.
 - **Stats band:** counters that count up when they scroll into view.
 - **About (`#about`):** bio and focus-area cards.
-- **Skills (`#skills`):** skill bars scaled by years of experience that animate on first view, plus a grouped toolbox of technologies.
-- **Experience (`#experience`):** a timeline that shows the three most recent roles, with a button to expand the earlier ones.
+- **Skills (`#skills`):** skill bars scaled by years of experience that animate on first view, plus a color-coded toolbox of technologies. Clicking a tool filters the experience timeline to the roles that used it.
+- **Experience (`#experience`):** a timeline of expandable role cards (the current role starts open). Clicking a skill tag, here or in the toolbox, highlights the matching roles and fades the rest.
+- **Systems (`#pipelines`):** [animated data-flow diagrams](frontend/src/app/pages/home/pipeline-diagram.ts) of systems from the experience section, with a tab per system and a description of each stage.
 - **Education:** degrees and certifications.
 - **Resume (`#resume`):** an inline PDF preview that can be toggled open, plus a download button.
 - **Contact (`#contact`):** a mailto link and a live demo form. Entering an email address calls `POST /api/send_portfolio_email`, which sends a real intro email, and the form reports how long the Lambda took to answer.
@@ -45,12 +46,15 @@ Every route is [lazy-loaded](frontend/src/app/app.routes.ts#L3-L22), and navigat
 - Pick one of the three endpoints, edit the JSON body for `POST` requests (the body is validated as JSON before sending), and send the request.
 - Shows the HTTP status (colored by success, client error or server error), the latency in milliseconds, and the JSON response with syntax highlighting.
 - Generates the equivalent `curl` command for the current origin.
+- A [latency panel](frontend/src/app/pages/api-console/latency-panel.ts) charts every call made in the session, with median, p95 and fastest times, a hover tooltip per bar, a table view, and a button that runs 10 pings.
 
 ### Shared UI
 
 - **Navigation:** links to the home sections and the other pages. It changes style once you scroll, collapses into a menu on small screens, and closes with Escape.
 - **Animated background:** a [full-screen canvas](frontend/src/app/shared/data-field.ts#L22-L145) of drifting nodes that link up when close and lean toward the cursor.
 - **Scroll reveal:** the [`appReveal` directive](frontend/src/app/shared/reveal.directive.ts) fades sections in the first time they enter the viewport.
+- **Command palette:** Ctrl+K (⌘K on Mac), or the search button in the nav, opens a [launcher](frontend/src/app/shared/command-palette.ts) for jumping to sections and pages, downloading the resume, copying the email address and more.
+- **Terminal:** the backtick key, or the terminal button in the nav, opens a [small shell](frontend/src/app/shared/terminal.ts) with `help`, `skills`, `experience`, `goto <place>` and other commands, plus tab completion and history.
 - **Footer:** email, GitHub and resume links, plus links to `/this-website` and the source repo.
 - **Accessibility:** a skip-to-content link, labelled icon links, and support for `prefers-reduced-motion` (the typewriter, background and other animations stop).
 - **SEO and sharing:** page titles per route, a meta description, and Open Graph tags that use the headshot.

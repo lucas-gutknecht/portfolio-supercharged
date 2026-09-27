@@ -18,6 +18,11 @@ const PATHS = {
   expand: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',
   send: 'M4 12 20 4l-4 16-4-7-8-1zm8 1 8-9',
   play: 'M7 5v14l12-7z',
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm9 2-4-4',
+  chevron: 'm6 9 6 6 6-6',
+  filter: 'M4 5h16l-6 7.5V19l-4-2v-4.5z',
+  copy: 'M9 9h10v10H9zM5 15V5h10',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8a7 7 0 0 1 14 0',
 } as const;
 
 export type IconName = keyof typeof PATHS;

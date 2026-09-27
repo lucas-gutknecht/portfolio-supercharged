@@ -20,6 +20,26 @@
         }
       </li>
     }
+    <li class="tools">
+      <button
+        type="button"
+        class="tool-btn search-btn"
+        (click)="close(); ui.paletteOpen.set(true)"
+        aria-label="Open command palette (Ctrl+K)"
+        title="Command palette (Ctrl+K)"
+      >
+        <app-icon name="search" /><kbd>Ctrl K</kbd>
+      </button>
+      <button
+        type="button"
+        class="tool-btn"
+        (click)="close(); ui.terminalOpen.set(true)"
+        aria-label="Open terminal (backtick key)"
+        title="Terminal ( ` )"
+      >
+        <app-icon name="terminal" />
+      </button>
+    </li>
     <li class="cta-item">
       <a class="btn btn-primary cta" routerLink="/" fragment="contact" (click)="close()">
         Let's talk <app-icon name="arrow" />

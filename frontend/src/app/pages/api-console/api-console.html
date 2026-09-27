@@ -87,6 +87,10 @@
             </div>
           }
         </div>
+
+        <div class="card latency">
+          <app-latency-panel [calls]="history()" [running]="bursting()" (burst)="runBurst()" />
+        </div>
       </div>
     </div>
   </div>

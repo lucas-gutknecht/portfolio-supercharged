@@ -76,7 +76,7 @@
     <div class="focus-list">
       @for (f of focusAreas; track f.title; let i = $index) {
         <article class="card interactive glow-border focus" appReveal [revealDelay]="i * 120">
-          <span class="focus-icon"><app-icon [name]="f.icon" /></span>
+          <span class="focus-icon" [style.--accent]="'var(--' + f.accent + ')'"><app-icon [name]="f.icon" /></span>
           <div>
             <h3>{{ f.title }}</h3>
             <p>{{ f.text }}</p>
@@ -93,7 +93,7 @@
     <div class="section-head" appReveal>
       <span class="eyebrow">Skills</span>
       <h2>The <span class="gradient-text">toolkit</span></h2>
-      <p>Years of hands-on, production experience with each tool.</p>
+      <p>Years of hands-on, production experience with each tool. Click any tool to see the roles where I used it.</p>
     </div>
 
     <div class="skills-grid">
@@ -114,11 +114,30 @@
 
       <div class="toolbox">
         @for (group of toolbox; track group.group; let i = $index) {
-          <div class="card tool-group" appReveal [revealDelay]="i * 100">
-            <h4>{{ group.group }}</h4>
+          <div
+            class="card interactive glow-border tool-group"
+            [style.--accent]="'var(--' + group.accent + ')'"
+            appReveal
+            [revealDelay]="i * 100"
+          >
+            <h4><span class="group-dot"></span>{{ group.group }}</h4>
             <div class="chip-list">
               @for (item of group.items; track item) {
-                <span class="chip">{{ item }}</span>
+                @let count = jobCount(item);
+                <button
+                  type="button"
+                  class="chip accented"
+                  [class.active]="skillFilter() === item"
+                  [attr.aria-pressed]="skillFilter() === item"
+                  [disabled]="!count"
+                  [title]="count ? 'Show the ' + count + (count === 1 ? ' role' : ' roles') + ' that used ' + item : 'Not tied to a listed role'"
+                  (click)="filterBySkill(item, true)"
+                >
+                  {{ item }}
+                  @if (count) {
+                    <span class="chip-count">{{ count }}</span>
+                  }
+                </button>
               }
             </div>
           </div>
@@ -137,38 +156,87 @@
       <p>More than ten years across insurance, energy, agriculture, finance, retail and media, moving from analyst to data engineer to full stack developer.</p>
     </div>
 
+    <div class="timeline-bar" appReveal>
+      @if (skillFilter(); as skill) {
+        <p class="filter-status" role="status">
+          <app-icon name="filter" />
+          <span>
+            <strong>{{ matchingJobs()?.size }}</strong>
+            {{ matchingJobs()?.size === 1 ? 'role' : 'roles' }} used <strong>{{ skill }}</strong>
+          </span>
+          <button type="button" class="clear" (click)="clearFilter()">Clear filter <app-icon name="close" /></button>
+        </p>
+      } @else {
+        <p class="filter-hint"><app-icon name="filter" /> Tip: click a skill tag to filter roles.</p>
+      }
+      <button class="btn btn-ghost btn-sm" type="button" (click)="toggleAllJobs()">
+        {{ allExpanded() ? 'Collapse all' : 'Expand all' }}
+      </button>
+    </div>
+
     <ol class="timeline">
-      @for (job of jobs(); track job.company + job.start; let first = $first) {
+      @for (job of jobs(); track job.company + job.start) {
+        @let open = expanded().has(job);
         <li class="job" appReveal>
-          <span class="node" [class.current]="first"></span>
-          <article class="card interactive glow-border">
-            <header class="job-head">
-              <div>
-                <h3>{{ job.title }}</h3>
+          <span class="node" [class.current]="job === currentJob"></span>
+          <article class="card interactive glow-border" [class.open]="open">
+            <h3 class="job-heading">
+            <button
+              type="button"
+              class="job-head"
+              [attr.aria-expanded]="open"
+              [attr.aria-controls]="'job-' + $index"
+              (click)="toggleJob(job)"
+            >
+              <span class="job-title">
+                <span class="title-text">{{ job.title }}</span>
                 <span class="company">{{ job.company }}</span>
+              </span>
+              <span class="job-meta">
+                <span class="dates" [class.current]="job === currentJob">{{ job.start }} – {{ job.end }}</span>
+                <app-icon class="chevron" name="chevron" />
+              </span>
+            </button>
+            </h3>
+            <div class="job-body" [id]="'job-' + $index" [attr.inert]="open ? null : ''">
+              <div class="job-body-inner">
+                <ul class="highlights">
+                  @for (h of job.highlights; track $index) {
+                    <li>{{ h }}</li>
+                  }
+                </ul>
               </div>
-              <span class="dates">{{ job.start }} – {{ job.end }}</span>
-            </header>
-            <ul class="highlights">
-              @for (h of job.highlights; track $index) {
-                <li>{{ h }}</li>
-              }
-            </ul>
+            </div>
             <div class="chip-list">
               @for (t of job.tags; track t) {
-                <span class="chip">{{ t }}</span>
+                @let accent = tagAccents.get(t);
+                <button
+                  type="button"
+                  class="chip"
+                  [class.accented]="accent"
+                  [class.active]="skillFilter() === t"
+                  [attr.aria-pressed]="skillFilter() === t"
+                  [style.--accent]="accent ? 'var(--' + accent + ')' : null"
+                  (click)="filterBySkill(t)"
+                >{{ t }}</button>
               }
             </div>
           </article>
         </li>
       }
     </ol>
+  </div>
+</section>
 
-    <div class="timeline-more">
-      <button class="btn btn-ghost" type="button" (click)="showAllJobs.set(!showAllJobs())">
-        {{ showAllJobs() ? 'Show fewer roles' : 'Show ' + hiddenJobCount + ' earlier roles' }}
-      </button>
+<!-- ================= PIPELINES ================= -->
+<section class="section" id="pipelines">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <span class="eyebrow">Systems</span>
+      <h2>How the data <span class="gradient-text">flows</span></h2>
+      <p>Two systems from my experience, drawn as data flows. Select a stage to see what it does.</p>
     </div>
+    <app-pipeline-diagram appReveal />
   </div>
 </section>
 

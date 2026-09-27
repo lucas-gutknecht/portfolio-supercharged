@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Icon } from './icon';
+import { UiService } from './ui.service';
 
 interface NavLink {
   label: string;
@@ -17,6 +18,7 @@ interface NavLink {
   host: { '[class.scrolled]': 'scrolled()', '[class.open]': 'open()' },
 })
 export class Nav {
+  protected readonly ui = inject(UiService);
   protected readonly scrolled = signal(false);
   protected readonly open = signal(false);
 

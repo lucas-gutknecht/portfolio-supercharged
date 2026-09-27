@@ -120,6 +120,37 @@
   font-size: 1.1rem;
 }
 
+.tools {
+  display: flex;
+  gap: 6px;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  kbd {
+    font: 500 0.7rem var(--font-mono);
+    color: var(--text-dim);
+  }
+}
+
 @media (max-width: 900px) {
   .toggle {
     display: grid;

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiResult, ApiService } from '../../shared/api.service';
 import { Icon } from '../../shared/icon';
 import { Reveal } from '../../shared/reveal.directive';
+import { CallRecord, LatencyPanel } from './latency-panel';
 
 interface Endpoint {
   method: 'GET' | 'POST';
@@ -51,7 +52,7 @@ function highlight(value: unknown): string {
 
 @Component({
   selector: 'app-api-console',
-  imports: [FormsModule, Icon, Reveal],
+  imports: [FormsModule, Icon, Reveal, LatencyPanel],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './api-console.html',
   styleUrl: './api-console.scss',
@@ -65,6 +66,8 @@ export class ApiConsole {
   protected readonly loading = signal(false);
   protected readonly result = signal<ApiResult | null>(null);
   protected readonly bodyError = signal('');
+  protected readonly history = signal<CallRecord[]>([]);
+  protected readonly bursting = signal(false);
 
   protected readonly responseHtml = computed(() => {
     const r = this.result();
@@ -99,8 +102,26 @@ export class ApiConsole {
     }
     this.bodyError.set('');
     this.loading.set(true);
-    this.result.set(await this.api.call(ep.method, ep.path, payload));
+    const res = await this.api.call(ep.method, ep.path, payload);
+    this.result.set(res);
+    this.record(ep.method, ep.path, res);
     this.loading.set(false);
+  }
+
+  /** Fires ten sequential GET /api/hello calls so the chart shows a spread of real latencies. */
+  protected async runBurst(): Promise<void> {
+    this.bursting.set(true);
+    for (let i = 0; i < 10; i++) {
+      this.record('GET', '/api/hello', await this.api.hello());
+    }
+    this.bursting.set(false);
+  }
+
+  private record(method: string, path: string, res: ApiResult): void {
+    this.history.update((h) => [
+      ...h,
+      { n: h.length + 1, method, path, status: res.status, ms: res.ms, ok: res.ok },
+    ]);
   }
 
   protected statusClass(status: number): string {
