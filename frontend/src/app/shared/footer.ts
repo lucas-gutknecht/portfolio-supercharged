@@ -98,6 +98,12 @@ import { Icon } from './icon';
       margin: 8px 0 0;
       color: var(--text-dim);
       font-size: 0.85rem;
+
+      /* Links inside a sentence need more than color to stand out. */
+      a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
     }
   `,
 })

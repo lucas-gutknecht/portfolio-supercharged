@@ -108,7 +108,6 @@ const tagGroups: Record<string, string> = {
   PySpark: 'Data',
   'Data warehouse': 'Data',
   Oracle: 'Data',
-  'SQL Server': 'Data',
   Boto3: 'Languages',
 };
 
@@ -241,15 +240,6 @@ export const experience: Job[] = [
     highlights: ['Automated rate and annuity tooling with SQL against Oracle and VBA.'],
     tags: ['Oracle', 'VBA'],
     uses: ['SQL', 'VBA'],
-  },
-  {
-    company: 'Voya Financial · Sentinel Development',
-    title: 'Business Analyst · SQL Developer',
-    start: 'Mar 2015',
-    end: 'May 2016',
-    highlights: ['Migrated Access to SQL Server, built reporting, and scrubbed and mapped client data imports.'],
-    tags: ['SQL Server', 'Access'],
-    uses: ['SQL'],
   },
 ];
 

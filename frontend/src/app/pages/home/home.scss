@@ -148,6 +148,10 @@
   inset: 8%;
   border-radius: 50%;
 
+  picture {
+    display: contents;
+  }
+
   img {
     position: relative;
     width: 100%;
@@ -402,7 +406,7 @@
 .tool-group {
   padding: 22px 24px;
 
-  h4 {
+  h3 {
     font-size: 0.8rem;
     font-family: var(--font-mono);
     text-transform: uppercase;

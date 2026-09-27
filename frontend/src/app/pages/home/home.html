@@ -35,7 +35,20 @@
     <div class="hero-visual">
       <div class="portrait">
         <div class="ring"></div>
-        <img [src]="profile.headshot" alt="Portrait of Lucas Gutknecht" width="720" height="720" />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/images/headshot-360.webp 360w, /images/headshot-720.webp 720w"
+            sizes="(max-width: 960px) 270px, 355px"
+          />
+          <img
+            [src]="profile.headshot"
+            alt="Portrait of Lucas Gutknecht"
+            width="720"
+            height="720"
+            fetchpriority="high"
+          />
+        </picture>
       </div>
       <span class="float-chip chip-a"><span class="dot cyan"></span>Kafka → Fargate → API</span>
       <span class="float-chip chip-b"><span class="dot violet"></span>Led Azure migration</span>
@@ -120,7 +133,7 @@
             appReveal
             [revealDelay]="i * 100"
           >
-            <h4><span class="group-dot"></span>{{ group.group }}</h4>
+            <h3><span class="group-dot"></span>{{ group.group }}</h3>
             <div class="chip-list">
               @for (item of group.items; track item) {
                 @let count = jobCount(item);

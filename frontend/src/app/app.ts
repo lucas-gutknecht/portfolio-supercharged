@@ -33,6 +33,8 @@ import { UiService } from './shared/ui.service';
       position: relative;
       z-index: 1;
       flex: 1;
+      /* Routes are lazy-loaded; reserving a screen keeps the footer from jumping when they arrive. */
+      min-height: 100vh;
     }
     .skip-link {
       position: absolute;
