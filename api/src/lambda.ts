@@ -11,8 +11,6 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
   ) as Record<string, string | undefined>;
   const clientIp = extractClientIp(headers, event.requestContext?.identity?.sourceIp ?? null);
 
-  console.log(`[visitor] ${clientIp ?? 'unknown'} ${event.httpMethod} ${event.path}`);
-
   const res = await route({ method: event.httpMethod, path: event.path, body, ip: clientIp });
 
   return {
