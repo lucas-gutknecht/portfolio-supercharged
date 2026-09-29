@@ -5,6 +5,7 @@ export interface ApiRequest {
   method: string;
   path: string;
   body: string | null;
+  ip?: string | null;
 }
 
 export interface ApiResponse {
@@ -22,6 +23,9 @@ function json(statusCode: number, body: unknown): ApiResponse {
 export async function route(req: ApiRequest): Promise<ApiResponse> {
   const path = req.path.replace(/\/+$/, '') || '/';
   const method = req.method.toUpperCase();
+  const clientIp = req.ip ?? 'unknown';
+
+  console.log(`[visitor] ${clientIp} ${method} ${path}`);
 
   if (method === 'GET' && path === '/api/hello') {
     return json(200, { message: 'You just made a successful API call!' });

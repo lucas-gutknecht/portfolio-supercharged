@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { extractClientIp } from './ip.js';
 import { route } from './router.js';
 
 try {
@@ -14,8 +15,12 @@ createServer(async (req, res) => {
   for await (const chunk of req) chunks.push(chunk as Buffer);
   const body = chunks.length ? Buffer.concat(chunks).toString('utf8') : null;
   const path = new URL(req.url ?? '/', 'http://localhost').pathname;
+  const headers = Object.fromEntries(
+    Object.entries(req.headers).map(([key, value]) => [key.toLowerCase(), Array.isArray(value) ? value.join(',') : value ?? undefined]),
+  ) as Record<string, string | undefined>;
+  const clientIp = extractClientIp(headers, req.socket.remoteAddress ?? null);
 
-  const result = await route({ method: req.method ?? 'GET', path, body });
+  const result = await route({ method: req.method ?? 'GET', path, body, ip: clientIp });
   console.log(`${req.method} ${path} -> ${result.statusCode}`);
 
   res.writeHead(result.statusCode, { 'Content-Type': 'application/json' });
