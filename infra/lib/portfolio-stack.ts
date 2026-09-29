@@ -115,8 +115,22 @@ function handler(event) {
           validation: acm.CertificateValidation.fromDns(zone),
         });
 
+    // CloudFront standard access logs: one line per viewer request (cache hits included),
+    // with the visitor IP in the c-ip field. Log delivery writes via ACLs, so they must be enabled.
+    const accessLogBucket = new s3.Bucket(this, 'AccessLogBucket', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      objectOwnership: s3.ObjectOwnership.OBJECT_WRITER,
+      lifecycleRules: [{ expiration: Duration.days(90) }],
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {
       comment: 'Portfolio website',
+      enableLogging: true,
+      logBucket: accessLogBucket,
+      logFilePrefix: 'cloudfront/',
       domainNames: [config.domainName],
       certificate,
       defaultRootObject: 'index.html',
@@ -169,5 +183,6 @@ function handler(event) {
     new CfnOutput(this, 'SiteUrl', { value: `https://${config.domainName}` });
     new CfnOutput(this, 'CloudFrontUrl', { value: `https://${distribution.distributionDomainName}` });
     new CfnOutput(this, 'ApiGatewayUrl', { value: api.url });
+    new CfnOutput(this, 'AccessLogBucketName', { value: accessLogBucket.bucketName });
   }
 }
